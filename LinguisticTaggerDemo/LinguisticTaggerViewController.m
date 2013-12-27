@@ -126,6 +126,16 @@
     
     [tagger enumerateTagsInRange:NSMakeRange(0, self.textView.text.length) scheme:NSLinguisticTagSchemeLexicalClass options:NSLinguisticTaggerOmitPunctuation|NSLinguisticTaggerJoinNames|NSLinguisticTaggerOmitWhitespace usingBlock:^(NSString *tag, NSRange tokenRange, NSRange sentenceRange, BOOL *stop)
     {
+        //enumerateTagsInRange appears to provide the best quality result
+        if( [tag isEqualToString:activeTag] )
+        {
+            [foundMatchingWords addObject:[textBody substringWithRange:tokenRange]];
+        }
+
+        //The following method retrieves a probability for each possibly lexical class the word
+        // could fall into. The result seems inferior to just using the match provided in the
+        // enumeration block.
+        /*
         NSArray *tagScores;
         NSArray *tags = [tagger possibleTagsAtIndex:tokenRange.location scheme:NSLinguisticTagSchemeLexicalClass tokenRange:NULL sentenceRange:NULL scores:&tagScores];
         
@@ -138,6 +148,7 @@
             
             //NSLog(@"Tagging %@ (%@)", [textBody substringWithRange:tokenRange], tags[0]);
         }
+        */
     }];
     
     NSMutableDictionary *tokens = [NSMutableDictionary dictionary];
